@@ -13,9 +13,10 @@
 namespace Sauls\Bundle\ObjectRegistryBundle\EvenListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
-use Sauls\Bundle\ObjectRegistryBundle\Event\DoctrineObjectEvents;
 use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
+use Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DoctrineEventsSubscriber implements EventSubscriberInterface
@@ -24,10 +25,15 @@ class DoctrineEventsSubscriber implements EventSubscriberInterface
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+    /**
+     * @var EventNameFactory
+     */
+    private $eventNameFactory;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(EventDispatcherInterface $eventDispatcher, EventNameFactory $eventNameFactory)
     {
         $this->eventDispatcher = $eventDispatcher;
+        $this->eventNameFactory = $eventNameFactory;
     }
 
     /**
@@ -38,8 +44,6 @@ class DoctrineEventsSubscriber implements EventSubscriberInterface
         return [
             Events::prePersist => ['onPrePersist'],
             Events::postPersist => ['onPostPersist'],
-            Events::preFlush => ['onPreFlush'],
-            Events::postFlush => ['onPostFlush'],
             Events::preUpdate => ['onPreUpdate'],
             Events::postUpdate => ['onPostUpdate'],
             Events::preRemove => ['onPreRemove'],
@@ -47,8 +51,27 @@ class DoctrineEventsSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onPrePersist(LifecycleEventArgs $args): void
+    public function onPrePersist(LifecycleEventArgs $args)
     {
-        $eventName = $this->eventDispatcher->createEventNameForObject(DoctrineObjectEvents::PRE_SAVE, $args->getObject());
+    }
+
+    public function onPostPersist(LifecycleEventArgs $args)
+    {
+    }
+
+    public function onPreUpdate(PreUpdateEventArgs $args)
+    {
+    }
+
+    public function onPostUpdate(LifecycleEventArgs $args)
+    {
+    }
+
+    public function onPreRemove(LifecycleEventArgs $args)
+    {
+    }
+
+    public function onPostRemove(LifecycleEventArgs $args)
+    {
     }
 }

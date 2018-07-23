@@ -1,1 +1,13 @@
 services:
+
+  _instanceof:
+    Sauls\Bundle\ObjectRegistryBundle\Manager\ManagerInterface:
+      tags: ['sauls.object_manager']
+
+  Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection:
+    arguments:
+      - [!tagged sauls.object_manager]
+  Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollectionInterface: '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection'
+
+  Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry: ~
+  Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistryInterface: '@Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry'

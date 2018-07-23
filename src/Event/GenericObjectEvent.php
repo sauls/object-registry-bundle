@@ -12,9 +12,9 @@
 
 namespace Sauls\Bundle\ObjectRegistryBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
-class GenericObjectManagerEvent extends Event implements GenericObjectManagerEventInterface
+class GenericObjectEvent extends GenericEvent
 {
 
 }

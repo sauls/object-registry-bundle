@@ -15,6 +15,4 @@ namespace Sauls\Bundle\ObjectRegistryBundle\EventDispatcher;
 interface EventDispatcherInterface
 {
     public function dispatch(string $eventName, object $event);
-    public function createEventNameForClass(string $eventName, string $class): string;
-    public function createEventNameForObject(string $eventName, object $object): string;
 }
