@@ -54,6 +54,10 @@ class EventNameFactory implements EventNameFactoryInterface
 
     public function createEventNameForEvent(string $eventName, object $event): string
     {
+        if (\method_exists($event, 'getSubject')) {
+            return $this->createEventNameForObject($eventName, $event->getSubject());
+        }
+
         if (\method_exists($event, 'getObject')) {
             return $this->createEventNameForObject($eventName, $event->getObject());
         }

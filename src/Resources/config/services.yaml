@@ -2,6 +2,7 @@ services:
 
   _instanceof:
     Sauls\Bundle\ObjectRegistryBundle\Manager\ManagerInterface:
+      shared: false
       tags: ['sauls.object_manager']
 
   Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection:
@@ -11,3 +12,8 @@ services:
 
   Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry: ~
   Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistryInterface: '@Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry'
+
+  Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager:
+    shared: false
+
+  Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManagerInterface: '@Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager'

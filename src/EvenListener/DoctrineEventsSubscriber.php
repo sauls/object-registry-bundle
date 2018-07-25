@@ -12,9 +12,12 @@
 
 namespace Sauls\Bundle\ObjectRegistryBundle\EvenListener;
 
+use Doctrine\Common\EventArgs;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Sauls\Bundle\ObjectRegistryBundle\Event\DoctrineObjectEvents;
+use Sauls\Bundle\ObjectRegistryBundle\Event\GenericDoctrineObjectEvent;
 use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -51,27 +54,55 @@ class DoctrineEventsSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onPrePersist(LifecycleEventArgs $args)
+    public function onPrePersist(LifecycleEventArgs $event): void
     {
+        $this->process(DoctrineObjectEvents::PRE_PERSIST, $event);
     }
 
-    public function onPostPersist(LifecycleEventArgs $args)
+    public function onPostPersist(LifecycleEventArgs $event): void
     {
+        $this->process(DoctrineObjectEvents::POST_PERSIST, $event);
     }
 
-    public function onPreUpdate(PreUpdateEventArgs $args)
+    public function onPreUpdate(PreUpdateEventArgs $event): void
     {
+        $this->process(DoctrineObjectEvents::PRE_UPDATE, $event);
     }
 
-    public function onPostUpdate(LifecycleEventArgs $args)
+    public function onPostUpdate(LifecycleEventArgs $event): void
     {
+        $this->process(DoctrineObjectEvents::POST_UPDATE, $event);
     }
 
-    public function onPreRemove(LifecycleEventArgs $args)
+    public function onPreRemove(LifecycleEventArgs $event): void
     {
+        $this->process(DoctrineObjectEvents::PRE_REMOVE, $event);
     }
 
-    public function onPostRemove(LifecycleEventArgs $args)
+    public function onPostRemove(LifecycleEventArgs $event): void
     {
+        $this->process(DoctrineObjectEvents::POST_REMOVE, $event);
+    }
+
+    /**
+     * @param string $eventName
+     * @param EventArgs|LifecycleEventArgs|PreUpdateEventArgs $event
+     */
+    private function process(string $eventName, EventArgs $event): void
+    {
+        if (!$this->hasMethod($event, 'getEntity')) {
+            return;
+        }
+
+        $entity = $event->getEntity();
+        $eventName = $this->eventNameFactory->createEventNameForObject($eventName, $entity);
+        $newEvent = new GenericDoctrineObjectEvent($entity, $event);
+
+        $this->eventDispatcher->dispatch($eventName, $newEvent);
+    }
+
+    private function hasMethod(object $object, string $method): bool
+    {
+        return \method_exists($object, $method);
     }
 }

@@ -13,10 +13,9 @@
 namespace Sauls\Bundle\ObjectRegistryBundle\Manager;
 
 use PHPUnit\Framework\TestCase;
-use Sauls\Bundle\ObjectRegistryBundle\Event\GenericObjectManagerEvent;
-use Sauls\Bundle\ObjectRegistryBundle\Event\ObjectEvents;
+use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
+use Sauls\Bundle\ObjectRegistryBundle\Exception\UnsupportedObjectClassException;
 use Sauls\Bundle\ObjectRegistryBundle\Stubs\SampleObject;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ObjectManagerTest extends TestCase
 {
@@ -31,13 +30,13 @@ class ObjectManagerTest extends TestCase
         $this->assertInstanceOf(SampleObject::class, $object);
     }
 
-    /**
-     * @return ObjectManager
-     */
     protected function createObjectManager(string $class): ObjectManager
     {
         $this->eventDispatcher = $this->prophesize(EventDispatcherInterface::class);
-        return new ObjectManager($class, $this->eventDispatcher->reveal());
+        $objectManager = new ObjectManager($this->eventDispatcher->reveal());
+        $objectManager->setObjectClass($class);
+
+        return $objectManager;
     }
 
     public function testShouldModifyObjectInstanceWithGivenProperties(): void
@@ -52,5 +51,21 @@ class ObjectManagerTest extends TestCase
 
         $this->assertEquals('hello world', $sampleObject->property1);
         $this->assertEquals('testing the world', $sampleObject->getProperty2());
+    }
+
+    public function testShouldThrowUnsupportedObjectClassException(): void
+    {
+        $this->expectException(UnsupportedObjectClassException::class);
+        $this->expectExceptionMessage('Object manager of `Sauls\Bundle\ObjectRegistryBundle\Stubs\SampleObject` object class does not support given `stdClass` class');
+        $objectManager = $this->createObjectManager(SampleObject::class);
+        $pretendedObject = new \stdClass();
+
+        $objectManager->modify($pretendedObject, ['value' => 'new value']);
+    }
+
+    public function testObjectManagerShouldReturnItsDefaultName(): void
+    {
+        $objectManager = $this->createObjectManager(SampleObject::class);
+        $this->assertEquals('default.object_manager', $objectManager->getName());
     }
 }

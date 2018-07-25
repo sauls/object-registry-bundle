@@ -14,16 +14,15 @@ namespace Sauls\Bundle\ObjectRegistryBundle\Event;
 
 interface DoctrineObjectEvents extends ObjectEvents
 {
-    public const PRE_SAVE = '';
-    public const POST_SAVE = '';
-    public const PRE_CREATE = '';
-    public const POST_CREATE = '';
-    public const PRE_UPDATE = '';
-    public const POST_UPDATE = '';
-    public const PRE_REMOVE = '';
-    public const POST_REMOVE = '';
-    public const PRE_BATCH_SAVE = '';
-    public const POST_BATCH_SAVE = '';
-    public const PRE_BATCH_REMOVE = '';
-    public const POST_BATCH_REMOVE = '';
+    public const PRE_PERSIST = 'sauls.object_registry.event.pre_doctrine_object_persist';
+    public const POST_PERSIST = 'sauls.object_registry.event.post_doctrine_object_persist';
+    public const PRE_UPDATE = 'sauls.object_registry.event.pre_doctrine_object_update';
+    public const POST_UPDATE = 'sauls.object_registry.event.post_doctrine_object_update';
+    public const PRE_REMOVE = 'sauls.object_registry.event.pre_doctrine_object_remove';
+    public const POST_REMOVE = 'sauls.object_registry.event.post_doctrine_object_remove';
+
+    public const PRE_BATCH_SAVE = 'sauls.object_registry.event.pre_doctrine_object_batch_save';
+    public const POST_BATCH_SAVE = 'sauls.object_registry.event.post_doctrine_object_batch_save';
+    public const PRE_BATCH_REMOVE = 'sauls.object_registry.event.pre_doctrine_object_batch_remove';
+    public const POST_BATCH_REMOVE = 'sauls.object_registry.event.post_doctrine_object_batch_remove';
 }

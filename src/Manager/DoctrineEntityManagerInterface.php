@@ -10,13 +10,15 @@
  * file that was distributed with this source code.
  */
 
+
 namespace Sauls\Bundle\ObjectRegistryBundle\Manager;
 
-use Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManagerInterface;
 
-interface PersistentBatchObjectManagerInterface
+interface DoctrineEntityManagerInterface extends
+    PersistentObjectManagerInterface,
+    PersistentBatchObjectManagerInterface,
+    ManagerInterface,
+    NamedManagerInterface
 {
-    public const DEFAULT_BATCH_SIZE = 50;
 
-    public function batch(array $objects, int $batchSize = self::DEFAULT_BATCH_SIZE): PersistentBatchObjectsManagerInterface;
 }

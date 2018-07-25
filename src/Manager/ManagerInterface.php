@@ -18,4 +18,11 @@ interface ManagerInterface
     public function modify(object $object, array $properties): object;
 
     public function setObjectClass(string $class): void;
+
+    /**
+     * @param mixed|object|string $value
+     * @return bool
+     */
+    public function supports($value): bool;
+    public function checkObjectIntegrity(object $object): void;
 }

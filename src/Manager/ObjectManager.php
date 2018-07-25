@@ -12,12 +12,13 @@
 
 namespace Sauls\Bundle\ObjectRegistryBundle\Manager;
 
+use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
+use Sauls\Bundle\ObjectRegistryBundle\Exception\UnsupportedObjectClassException;
 use function Sauls\Component\Helper\define_object;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ObjectManager implements ManagerInterface, NamedManagerInterface
 {
-    public const DEFAULT_OBJECT_MANAGER_NAME = 'default_object_manager';
+    public const DEFAULT_OBJECT_MANAGER_NAME = 'default.object_manager';
 
     /**
      * @var string
@@ -54,7 +55,54 @@ class ObjectManager implements ManagerInterface, NamedManagerInterface
      */
     public function modify(object $object, array $properties): object
     {
+        $this->checkObjectIntegrity($object);
+
         return define_object($object, $properties);
+    }
+
+    public function checkObjectIntegrity(object $object): void
+    {
+        if ($this->notSupported($object)) {
+            throw new UnsupportedObjectClassException(
+                sprintf(
+                    'Object manager of `%s` object class does not support given `%s` class',
+                    $this->objectClass,
+                    \get_class($object)
+                )
+            );
+        }
+    }
+
+    private function classIsSupported(string $class): bool
+    {
+        return false === empty($this->objectClass) && \is_a($class, $this->objectClass, true);
+    }
+
+    private function objectIsSupported(object $object): bool
+    {
+        return $object instanceof $this->objectClass;
+    }
+
+    private function notSupported($value): bool
+    {
+        return false === $this->supports($value);
+    }
+
+    /**
+     * @param mixed|object|string $value
+     * @return bool
+     */
+    public function supports($value): bool
+    {
+        if (\is_string($value)) {
+            return $this->classIsSupported($value);
+        }
+
+        if (\is_object($value)) {
+            return $this->objectIsSupported($value);
+        }
+
+        return false;
     }
 
     public function getName(): string

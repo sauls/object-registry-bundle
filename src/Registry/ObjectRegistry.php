@@ -40,8 +40,6 @@ class ObjectRegistry implements RegistryInterface
 
     public function getManager(string $class): ManagerInterface
     {
-        $manager = null;
-
         if ($this->hasConcreteManager($class)) {
             return $this->configureManager(
                 $class,

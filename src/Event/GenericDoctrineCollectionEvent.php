@@ -10,12 +10,11 @@
  * file that was distributed with this source code.
  */
 
+
 namespace Sauls\Bundle\ObjectRegistryBundle\Event;
 
-interface ObjectEvents
+
+class GenericDoctrineCollectionEvent extends GenericObjectEvent
 {
-    public const PRE_OBJECT_CREATE = 'sauls.object_registry.event.pre_object_create';
-    public const POST_OBJECT_CREATE = 'sauls.object_registry.event.post_object_create';
-    public const PRE_OBJECT_MODIFY = 'sauls.object_registry.event.pre_object_modify';
-    public const POST_OBJECT_MODIFY = 'sauls.object_registry.event.post_object_modify';
+
 }
