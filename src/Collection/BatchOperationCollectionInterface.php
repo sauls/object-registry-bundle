@@ -10,14 +10,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Sauls\Bundle\ObjectRegistryBundle\Manager;
+namespace Sauls\Bundle\ObjectRegistryBundle\Collection;
 
-interface PersistentBatchObjectManagerInterface
+use Sauls\Component\Collection\Collection;
+
+interface BatchOperationCollectionInterface extends Collection
 {
-    public const DEFAULT_BATCH_SIZE = 50;
 
-    public function batch(
-        array $objects,
-        int $batchSize = self::DEFAULT_BATCH_SIZE
-    ): PersistentBatchObjectsManagerInterface;
 }

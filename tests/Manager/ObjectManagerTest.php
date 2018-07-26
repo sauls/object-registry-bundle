@@ -68,4 +68,27 @@ class ObjectManagerTest extends TestCase
         $objectManager = $this->createObjectManager(SampleObject::class);
         $this->assertEquals('default.object_manager', $objectManager->getName());
     }
+
+    public function testShouldReturnFalseWhenCheckingSupportForUnsupportedObject(): void
+    {
+        $objectManager = $this->createObjectManager(SampleObject::class);
+        $this->assertFalse($objectManager->supports(new \stdClass));
+    }
+
+    public function testShouldReturnFalseWhenCheckingSupportForUnsupportedClass(): void
+    {
+        $objectManager = $this->createObjectManager(SampleObject::class);
+        $this->assertFalse($objectManager->supports(\stdClass::class));
+    }
+
+    public function testShouldReturnFalseWhenCheckingOnNotSupportedValueTypes(): void
+    {
+        $objectManager = $this->createObjectManager(SampleObject::class);
+        $this->assertFalse($objectManager->supports([]));
+        $this->assertFalse($objectManager->supports(null));
+        $this->assertFalse($objectManager->supports(0));
+        $this->assertFalse($objectManager->supports(1));
+        $this->assertFalse($objectManager->supports(199));
+        $this->assertFalse($objectManager->supports(19.9));
+    }
 }

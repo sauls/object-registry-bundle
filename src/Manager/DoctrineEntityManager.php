@@ -17,7 +17,6 @@ use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Psr\Log\LoggerInterface;
 use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Exception\UnsupportedObjectClassException;
-use Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManagerInterface;
 
 class DoctrineEntityManager extends ObjectManager implements DoctrineEntityManagerInterface
 {
@@ -86,59 +85,6 @@ class DoctrineEntityManager extends ObjectManager implements DoctrineEntityManag
             return false;
         }
     }
-
-//    public function batchSave(array $objects, int $batchSize = self::DEFAULT_BATCH_SIZE): bool
-//    {
-//        try {
-//            $chunks = \array_chunk($objects, $batchSize);
-//
-//            $this->entityManager->transactional(function () use ($chunks) {
-//                foreach ($chunks as $chunk) {
-//                    $event = new GenericDoctrineCollectionEvent($chunk);
-//                    $this->eventDispatcher->dispatch(DoctrineObjectEvents::PRE_BATCH_SAVE, $event);
-//                    foreach ($chunk as $object) {
-//                        $this->checkObjectIntegrity($object);
-//                        $this->entityManager->persist($object);
-//                    }
-//                    $this->entityManager->flush();
-//                    $this->entityManager->clear();
-//                    $this->eventDispatcher->dispatch(DoctrineObjectEvents::POST_BATCH_SAVE, $event);
-//                }
-//            });
-//
-//            return true;
-//        } catch (\Throwable $exception) {
-//            $this->log($exception);
-//            return false;
-//        }
-//    }
-//
-//    public function batchRemove(array $objects, int $batchSize = self::DEFAULT_BATCH_SIZE): bool
-//    {
-//        try {
-//
-//            $chunks = \array_chunk($objects, $batchSize);
-//
-//            $this->entityManager->transactional(function () use ($chunks) {
-//                foreach ($chunks as $chunk) {
-//                    $event = new GenericDoctrineCollectionEvent($chunk);
-//                    $this->eventDispatcher->dispatch(DoctrineObjectEvents::PRE_BATCH_REMOVE, $event);
-//                    foreach ($chunk as $object) {
-//                        $this->checkObjectIntegrity($object);
-//                        $this->entityManager->remove($object);
-//                    }
-//                    $this->entityManager->flush();
-//                    $this->entityManager->clear();
-//                    $this->eventDispatcher->dispatch(DoctrineObjectEvents::POST_BATCH_REMOVE, $event);
-//                }
-//            });
-//
-//            return true;
-//        } catch (\Throwable $exception) {
-//            $this->log($exception);
-//            return false;
-//        }
-//    }
 
     public function setObjectClass(string $class): void
     {

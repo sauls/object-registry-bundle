@@ -10,14 +10,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Sauls\Bundle\ObjectRegistryBundle\Manager;
 
-interface PersistentBatchObjectManagerInterface
+namespace Sauls\Bundle\ObjectRegistryBundle\Batch\Operation;
+
+interface OperationInterface
 {
-    public const DEFAULT_BATCH_SIZE = 50;
+    public function execute(object $object): void;
 
-    public function batch(
-        array $objects,
-        int $batchSize = self::DEFAULT_BATCH_SIZE
-    ): PersistentBatchObjectsManagerInterface;
+    public function getName(): string;
+
+    public function getPreEventName(): string;
+    public function getPostEventName(): string;
 }

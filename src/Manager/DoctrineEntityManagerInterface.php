@@ -10,9 +10,7 @@
  * file that was distributed with this source code.
  */
 
-
 namespace Sauls\Bundle\ObjectRegistryBundle\Manager;
-
 
 interface DoctrineEntityManagerInterface extends
     PersistentObjectManagerInterface,

@@ -13,6 +13,7 @@
 namespace Sauls\Bundle\ObjectRegistryBundle\Collection;
 
 use PHPUnit\Framework\TestCase;
+use Sauls\Bundle\ObjectRegistryBundle\Exception\UnsupportedManagerClassException;
 use Sauls\Bundle\ObjectRegistryBundle\Manager\ConcreteManagerInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Manager\ManagerInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Manager\NamedManagerInterface;
@@ -78,5 +79,39 @@ class ObjectManagerCollectionTest extends TestCase
         $collection->clear();
 
         $this->assertEquals(0, $collection->count());
+    }
+
+    public function testShouldThrowUnsupportedManagerClassException(): void
+    {
+        $this->expectException(UnsupportedManagerClassException::class);
+        $unsupportedManager = $this->prophesize(\stdClass::class);
+        $this->createObjectManagerCollection([
+            $unsupportedManager->reveal()
+        ]);
+    }
+
+    public function testShouldGetWantedManagers(): void
+    {
+        $concreteManager = $this->prophesize(ConcreteManagerInterface::class);
+        $concreteManager->getObjectClass()->willReturn(\stdClass::class);
+
+        $namedManager = $this->prophesize(NamedManagerInterface::class);
+        $namedManager->getName()->willReturn('test_manager');
+
+        $collection = $this->createObjectManagerCollection([
+            $concreteManager->reveal(),
+            $namedManager->reveal()
+        ]);
+
+        $this->assertNotNull($collection->get('test_manager'));
+        $this->assertNotNull($collection->get(\stdClass::class));
+    }
+
+    public function testShouldReturnDefaultValueOnGettingManagerThatDoesNotExist(): void
+    {
+        $collection = $this->createObjectManagerCollection();
+
+        $this->assertNull($collection->get('non_existent_manager', null));
+        $this->assertFalse($collection->get('another_manager', false));
     }
 }

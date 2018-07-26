@@ -10,13 +10,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Sauls\Bundle\ObjectRegistryBundle\Manager\Batch;
+namespace Sauls\Bundle\ObjectRegistryBundle\Manager;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Sauls\Bundle\ObjectRegistryBundle\Batch\Collection\BatchOperationCollectionInterface;
+use Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\OperationInterface;
+use Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\PersistOperation;
+use Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\RemoveOperation;
 use Sauls\Bundle\ObjectRegistryBundle\Event\GenericDoctrineCollectionEvent;
 use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
-use Sauls\Bundle\ObjectRegistryBundle\Manager\DoctrineEntityManagerInterface;
+use Sauls\Bundle\ObjectRegistryBundle\Exception\EmptyDataException;
+use Sauls\Bundle\ObjectRegistryBundle\Exception\ManagerNotFoundException;
+use Sauls\Bundle\ObjectRegistryBundle\Exception\OperationNotFoundException;
 
 class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInterface
 {
@@ -42,14 +48,14 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
      */
     private $logger;
     /**
-     * @var BatchOperationCollection
+     * @var BatchOperationCollectionInterface
      */
     private $batchOperations;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         EventDispatcherInterface $eventDispatcher,
-        BatchOperationCollection $batchOperations,
+        BatchOperationCollectionInterface $batchOperations,
         LoggerInterface $logger
     ) {
         $this->entityManager = $entityManager;
@@ -60,7 +66,7 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
 
     public function save(): bool
     {
-        return $this->process(BatchOperations::PERSIST_OPERATION);
+        return $this->process(PersistOperation::NAME);
     }
 
     private function process(string $operationName): bool
@@ -81,8 +87,8 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
     private function checkManagerIsNotNull(): void
     {
         if (null === $this->manager) {
-            throw new \RuntimeException(
-                sprintf('Manager cannot be `null` maybe you forgot to assign it?')
+            throw new ManagerNotFoundException(
+                'Manager cannot be `null` maybe you forgot to assign it? To do so use `setManager` method'
             );
         }
     }
@@ -90,7 +96,7 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
     private function checkChunksIsNotEmpty(): void
     {
         if (true === empty($this->chunks)) {
-            throw new \RuntimeException(
+            throw new EmptyDataException(
                 \sprintf('No data to work with maybe you forgot to fill?')
             );
         }
@@ -98,7 +104,7 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
 
     private function processChunks(string $operationName): void
     {
-        $operation = $this->batchOperations->get($operationName);
+        $operation = $this->getOperationByName($operationName);
 
         foreach ($this->chunks as $chunk) {
             $event = new GenericDoctrineCollectionEvent($chunk);
@@ -110,7 +116,18 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
         }
     }
 
-    private function processChunk(BatchOperationInterface $operation, array $chunk): void
+    private function getOperationByName(string $operationName): OperationInterface
+    {
+        $operation = $this->batchOperations->get($operationName);
+
+        if (null === $operation) {
+            throw new OperationNotFoundException(sprintf('Batch operation `%s` was not found', $operationName));
+        }
+
+        return $operation;
+    }
+
+    private function processChunk(OperationInterface $operation, array $chunk): void
     {
         foreach ($chunk as $object) {
             $this->manager->checkObjectIntegrity($object);
@@ -120,7 +137,7 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
 
     public function remove(): bool
     {
-        return $this->process(BatchOperations::REMOVE_OPERATION);
+        return $this->process(RemoveOperation::NAME);
     }
 
     public function fill(array $objects, int $batchSize): void

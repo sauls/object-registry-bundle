@@ -3,17 +3,21 @@ services:
   _instanceof:
     Sauls\Bundle\ObjectRegistryBundle\Manager\ManagerInterface:
       shared: false
-      tags: ['sauls.object_manager']
+      tags: ['sauls.object_registry.manager']
+    Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\OperationInterface:
+      tags: ['sauls.object_registry.batch_operation']
+    Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager:
+      shared: false
 
   Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection:
     arguments:
-      - [!tagged sauls.object_manager]
+      - [!tagged sauls.object_registry.manager]
+
+  Sauls\Bundle\ObjectRegistryBundle\Batch\Collection\OperationCollection
   Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollectionInterface: '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection'
 
   Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry: ~
   Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistryInterface: '@Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry'
 
-  Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager:
-    shared: false
-
+  Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager: ~
   Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManagerInterface: '@Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager'

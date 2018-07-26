@@ -10,10 +10,9 @@
  * file that was distributed with this source code.
  */
 
+namespace Sauls\Bundle\ObjectRegistryBundle\Exception;
 
-namespace Sauls\Bundle\ObjectRegistryBundle\Batch\Operation;
-
-interface BatchOperationInterface
+class UnsupportedManagerClassException extends \RuntimeException
 {
-    public function execute(...$arguments): void;
+
 }

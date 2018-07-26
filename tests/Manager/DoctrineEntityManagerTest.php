@@ -39,6 +39,11 @@ class DoctrineEntityManagerTest extends TestCase
     private $logger;
 
     /**
+     * @var PersistentBatchObjectsManagerInterface
+     */
+    private $batchObjectsManager;
+
+    /**
      * @var ClassMetadataFactory
      */
     private $classMetaDataFactory;
@@ -59,7 +64,8 @@ class DoctrineEntityManagerTest extends TestCase
             $this->eventDispatcher->reveal(),
             $this->entityManager->reveal(),
             $this->logger->reveal(),
-            $this->classMetaDataFactory->reveal()
+            $this->classMetaDataFactory->reveal(),
+            $this->batchObjectsManager->reveal()
         );
         $manager->setObjectClass($class);
 
@@ -123,6 +129,20 @@ class DoctrineEntityManagerTest extends TestCase
         $this->assertFalse($manager->remove($object));
     }
 
+    public function testShouldReturnPersistenBatchObjectsManagerOnBatchMethodCall(): void
+    {
+        $manager = $this->createDoctrineEntityManager(SampleObject::class);
+        $collection = ['1', '2'];
+        $this->batchObjectsManager->fill($collection, 1)->shouldBeCalled();
+        $this->batchObjectsManager->setManager($manager)->shouldBeCalled();
+
+        $this->assertInstanceOf(
+            PersistentBatchObjectsManagerInterface::class,
+            $manager->batch($collection, 1)
+        );
+    }
+
+
     protected function setUp()
     {
         $this->eventDispatcher = $this->prophesize(EventDispatcherInterface::class);
@@ -130,5 +150,6 @@ class DoctrineEntityManagerTest extends TestCase
         $this->logger = $this->prophesize(LoggerInterface::class);
         $this->classMetaDataFactory = $this->prophesize(ClassMetadataFactory::class);
         $this->classMetaDataFactory->isTransient(Argument::any())->willReturn(false);
+        $this->batchObjectsManager = $this->prophesize(PersistentBatchObjectsManagerInterface::class);
     }
 }

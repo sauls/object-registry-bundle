@@ -10,9 +10,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sauls\Bundle\ObjectRegistryBundle\Manager\Batch;
-
-use Sauls\Bundle\ObjectRegistryBundle\Manager\DoctrineEntityManagerInterface;
+namespace Sauls\Bundle\ObjectRegistryBundle\Manager;
 
 interface PersistentBatchObjectsManagerInterface
 {

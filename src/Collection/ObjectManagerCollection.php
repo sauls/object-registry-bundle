@@ -12,7 +12,7 @@
 
 namespace Sauls\Bundle\ObjectRegistryBundle\Collection;
 
-use Sauls\Bundle\ObjectRegistryBundle\Exception\UnsupportedObjectClassException;
+use Sauls\Bundle\ObjectRegistryBundle\Exception\UnsupportedManagerClassException;
 use Sauls\Bundle\ObjectRegistryBundle\Manager\ConcreteManagerInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Manager\ManagerInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Manager\NamedManagerInterface;
@@ -29,7 +29,7 @@ class ObjectManagerCollection extends ArrayCollection implements ObjectManagerCo
         $this->setConcreteManager($value);
         $this->setNamedManager($value);
         $this->setLooseManager($key, $value);
-        $this->throwUnsupportedObjectClassException($value);
+        $this->throwUnsupportedManagerClassException($value);
     }
 
     /**
@@ -77,14 +77,14 @@ class ObjectManagerCollection extends ArrayCollection implements ObjectManagerCo
     /**
      * @param $value
      */
-    private function throwUnsupportedObjectClassException(object $value): void
+    private function throwUnsupportedManagerClassException(object $value): void
     {
         if ($this->isNotSupportedObjectClass($value)) {
-            throw new UnsupportedObjectClassException(
+            throw new UnsupportedManagerClassException(
                 sprintf(
-                    'Given `%s` class should implement one of `%s` interfaces.',
+                    'Given `%s` class should implement one of [%s] interfaces',
                     \get_class($value),
-                    \implode($this->getSupportedObjectClasses())
+                    \implode(', ', $this->getSupportedManagerClasses())
                 )
             );
         }
@@ -97,7 +97,7 @@ class ObjectManagerCollection extends ArrayCollection implements ObjectManagerCo
 
     private function isSupportedObjectClass(object $value): bool
     {
-        foreach ($this->getSupportedObjectClasses() as $supportedObjectClass) {
+        foreach ($this->getSupportedManagerClasses() as $supportedObjectClass) {
             if ($value instanceof $supportedObjectClass) {
                 return true;
             }
@@ -106,7 +106,7 @@ class ObjectManagerCollection extends ArrayCollection implements ObjectManagerCo
         return false;
     }
 
-    private function getSupportedObjectClasses(): array
+    private function getSupportedManagerClasses(): array
     {
         return [
             ManagerInterface::class,
