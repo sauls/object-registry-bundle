@@ -14,10 +14,10 @@ namespace Sauls\Bundle\ObjectRegistryBundle\Manager;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Sauls\Bundle\ObjectRegistryBundle\Batch\Collection\BatchOperationCollectionInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\OperationInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\PersistOperation;
 use Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\RemoveOperation;
+use Sauls\Bundle\ObjectRegistryBundle\Collection\BatchOperationCollectionInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Event\GenericDoctrineCollectionEvent;
 use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Exception\EmptyDataException;
@@ -75,11 +75,13 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
         $this->checkChunksIsNotEmpty();
 
         try {
-            $this->entityManager->transactional(function () use ($operationName) {
-                $this->processChunks($operationName);
+            $self = $this;
+            $this->entityManager->transactional(function () use ($operationName, $self) {
+                $self->processChunks($operationName);
             });
             return true;
         } catch (\Throwable $exception) {
+            $this->logger->critical($exception->getMessage(), [$exception]);
             return false;
         }
     }
