@@ -71,31 +71,23 @@ class GenericDoctrineObjectEvent extends GenericObjectEvent
     }
 
     /**
-     * Merge changeset of the given event into the current one.
-     *
-     * @param GenericDoctrineObjectEvent $event
-     * @throws \Exception
+     * @return array
      */
-    public function merge(GenericDoctrineObjectEvent $event)
+    private function registerChangeSet()
     {
-        if ($this->subject !== $event->getSubject()) {
-            throw new \RuntimeException('Can\'t merge event from two different instances.');
-        }
-        $existing = $this->registerChangeSet();
-        $other    = $event->getChangeSet();
-        foreach ($other as $key => $values) {
-            if (false === array_key_exists($key, $existing)) {
-                $existing[$key] = $values;
-                continue;
-            }
-            if (end($existing[$key]) === current($values)) {
-                array_shift($values);
-            }
-            $existing[$key] = array_merge($existing[$key], $values);
-        }
-        ksort($existing);
-        $this->changeSet = $existing;
+        return $this->changeSet = null === $this->changeSet
+            ? $this->getUnitOfWork()->getEntityChangeSet($this->subject)
+            : $this->changeSet;
     }
+
+    /**
+     * @return UnitOfWork
+     */
+    public function getUnitOfWork()
+    {
+        return $this->getEntityManager()->getUnitOfWork();
+    }
+
     /**
      * @return EntityManagerInterface
      */
@@ -105,23 +97,13 @@ class GenericDoctrineObjectEvent extends GenericObjectEvent
             return $this->parent->getEntityManager();
         }
 
-        throw new \RuntimeException(sprintf('Method `getEntityManager` does not exist on parent event class `%s`', \get_class($this->parent)));
-    }
-    /**
-     * @return UnitOfWork
-     */
-    public function getUnitOfWork()
-    {
-        return $this->getEntityManager()->getUnitOfWork();
-    }
-    /**
-     * @return array
-     */
-    private function registerChangeSet()
-    {
-        return $this->changeSet = null === $this->changeSet
-            ? $this->getUnitOfWork()->getEntityChangeSet($this->subject)
-            : $this->changeSet
-            ;
+        if (\method_exists($this->parent, 'getObjectManager')) {
+            return $this->parent->getObjectManager();
+        }
+
+        throw new \RuntimeException(sprintf(
+                'Method `getEntityManager` or `getObjectManager` does not exist on parent event class `%s`',
+                \get_class($this->parent))
+        );
     }
 }

@@ -12,14 +12,13 @@
 
 namespace Sauls\Bundle\ObjectRegistryBundle\EvenListener;
 
-use Doctrine\Common\EventArgs;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Sauls\Bundle\ObjectRegistryBundle\Event\DoctrineObjectEvents;
 use Sauls\Bundle\ObjectRegistryBundle\Event\GenericDoctrineObjectEvent;
 use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
-use Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactory;
+use Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DoctrineEventsSubscriber implements EventSubscriberInterface
@@ -29,11 +28,11 @@ class DoctrineEventsSubscriber implements EventSubscriberInterface
      */
     private $eventDispatcher;
     /**
-     * @var EventNameFactory
+     * @var EventNameFactoryInterface
      */
     private $eventNameFactory;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher, EventNameFactory $eventNameFactory)
+    public function __construct(EventDispatcherInterface $eventDispatcher, EventNameFactoryInterface $eventNameFactory)
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->eventNameFactory = $eventNameFactory;
@@ -59,6 +58,19 @@ class DoctrineEventsSubscriber implements EventSubscriberInterface
         $this->process(DoctrineObjectEvents::PRE_PERSIST, $event);
     }
 
+    /**
+     * @param string $eventName
+     * @param LifecycleEventArgs|PreUpdateEventArgs $event
+     */
+    private function process(string $eventName, LifecycleEventArgs $event): void
+    {
+        $entity = $event->getEntity();
+        $eventName = $this->eventNameFactory->create($eventName, $entity);
+        $newEvent = new GenericDoctrineObjectEvent($entity, $event);
+
+        $this->eventDispatcher->dispatch($eventName, $newEvent);
+    }
+
     public function onPostPersist(LifecycleEventArgs $event): void
     {
         $this->process(DoctrineObjectEvents::POST_PERSIST, $event);
@@ -82,27 +94,5 @@ class DoctrineEventsSubscriber implements EventSubscriberInterface
     public function onPostRemove(LifecycleEventArgs $event): void
     {
         $this->process(DoctrineObjectEvents::POST_REMOVE, $event);
-    }
-
-    /**
-     * @param string $eventName
-     * @param EventArgs|LifecycleEventArgs|PreUpdateEventArgs $event
-     */
-    private function process(string $eventName, EventArgs $event): void
-    {
-        if (!$this->hasMethod($event, 'getEntity')) {
-            return;
-        }
-
-        $entity = $event->getEntity();
-        $eventName = $this->eventNameFactory->createEventNameForObject($eventName, $entity);
-        $newEvent = new GenericDoctrineObjectEvent($entity, $event);
-
-        $this->eventDispatcher->dispatch($eventName, $newEvent);
-    }
-
-    private function hasMethod(object $object, string $method): bool
-    {
-        return \method_exists($object, $method);
     }
 }
