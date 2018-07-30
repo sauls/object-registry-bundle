@@ -20,7 +20,7 @@ services:
 
   Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry:
     arguments:
-      - '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection',
+      - '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection'
       - '@Doctrine\Common\Persistence\Mapping\ClassMetadataFactory'
   Sauls\Bundle\ObjectRegistryBundle\Registry\RegistryInterface: '@Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry'
 
