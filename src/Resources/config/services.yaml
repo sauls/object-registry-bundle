@@ -18,7 +18,10 @@ services:
         - [!tagged sauls.object_registry.batch_operation]
   Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollectionInterface: '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection'
 
-  Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry: ~
+  Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry:
+    arguments:
+      - '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection',
+      - '@Doctrine\Common\Persistence\Mapping\ClassMetadataFactory'
   Sauls\Bundle\ObjectRegistryBundle\Registry\RegistryInterface: '@Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry'
 
   Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager: ~
