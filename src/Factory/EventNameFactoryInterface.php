@@ -14,8 +14,8 @@ namespace Sauls\Bundle\ObjectRegistryBundle\Factory;
 
 interface EventNameFactoryInterface
 {
+    public function create(string $eventName, object $object): string;
     public function createEventNameForClass(string $eventName, string $class): string;
     public function createEventNameForObject(string $eventName, object $object): string;
     public function createEventNameForCollection(string $eventName, array $collection): string;
-    public function createEventNameForEvent(string $eventName, object $event): string;
 }

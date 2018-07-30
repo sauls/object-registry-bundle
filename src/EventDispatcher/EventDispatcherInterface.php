@@ -12,7 +12,9 @@
 
 namespace Sauls\Bundle\ObjectRegistryBundle\EventDispatcher;
 
+use Symfony\Component\EventDispatcher\Event;
+
 interface EventDispatcherInterface
 {
-    public function dispatch(string $eventName, object $event);
+    public function dispatch(string $eventName, Event $event);
 }

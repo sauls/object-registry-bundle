@@ -13,7 +13,7 @@ services:
     arguments:
       - [!tagged sauls.object_registry.manager]
 
-  Sauls\Bundle\ObjectRegistryBundle\Batch\Collection\OperationCollection
+  Sauls\Bundle\ObjectRegistryBundle\Batch\Collection\OperationCollection: ~
   Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollectionInterface: '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection'
 
   Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry: ~

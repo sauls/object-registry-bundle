@@ -13,6 +13,7 @@
 namespace Sauls\Bundle\ObjectRegistryBundle\EventDispatcher;
 
 use Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactoryInterface;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as SymfonyEventDispatcherInterface;
 
 class EventDispatcher implements EventDispatcherInterface
@@ -34,9 +35,9 @@ class EventDispatcher implements EventDispatcherInterface
         $this->eventNameFactory = $eventNameFactory;
     }
 
-    public function dispatch(string $eventName, object $event): void
+    public function dispatch(string $eventName, Event $event): void
     {
-        $eventName = $this->eventNameFactory->createEventNameForEvent($eventName, $event);
+        $eventName = $this->eventNameFactory->create($eventName, $event);
 
         if ($this->eventDispatcher->hasListeners($eventName)) {
             $this->eventDispatcher->dispatch($eventName, $event);

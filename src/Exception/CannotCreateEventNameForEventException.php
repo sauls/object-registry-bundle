@@ -10,11 +10,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Sauls\Bundle\ObjectRegistryBundle\Collection;
+namespace Sauls\Bundle\ObjectRegistryBundle\Exception;
 
-use Sauls\Component\Collection\Collection;
-
-interface ObjectManagerCollectionInterface extends Collection
+class CannotCreateEventNameForEventException extends \RuntimeException
 {
 
 }

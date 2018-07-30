@@ -73,6 +73,6 @@ class ObjectRegistry implements RegistryInterface
 
     public function isDoctrineObject(string $class): bool
     {
-        $this->classMetadataFactory->isTransient($class);
+        return false === $this->classMetadataFactory->isTransient($class);
     }
 }
