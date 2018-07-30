@@ -23,19 +23,19 @@ class SaulsObjectRegistryExtensionTest extends TestCase
      */
     private $containerBuilder;
 
-    public function createSaulsObjectRegistryExtension(): SaulsObjectRegistryExtension
-    {
-        return new SaulsObjectRegistryExtension;
-    }
-
     public function testShouldLoadExtension(): void
     {
         $extension = $this->createSaulsObjectRegistryExtension();
-        $extension->load([],  $this->containerBuilder);
+        $extension->load([], $this->containerBuilder);
 
         $this->assertTrue(
             $this->containerBuilder->has(ObjectRegistry::class)
         );
+    }
+
+    public function createSaulsObjectRegistryExtension(): SaulsObjectRegistryExtension
+    {
+        return new SaulsObjectRegistryExtension;
     }
 
     protected function setUp()

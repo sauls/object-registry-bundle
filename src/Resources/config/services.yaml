@@ -6,14 +6,16 @@ services:
       tags: ['sauls.object_registry.manager']
     Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\OperationInterface:
       tags: ['sauls.object_registry.batch_operation']
-    Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager:
+    Sauls\Bundle\ObjectRegistryBundle\Manager\PersistentBatchObjectsManager:
       shared: false
 
   Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection:
     arguments:
       - [!tagged sauls.object_registry.manager]
 
-  Sauls\Bundle\ObjectRegistryBundle\Batch\Collection\OperationCollection: ~
+  Sauls\Bundle\ObjectRegistryBundle\Batch\Collection\OperationCollection:
+    arguments:
+        - [!tagged sauls.object_registry.batch_operation]
   Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollectionInterface: '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection'
 
   Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry: ~
@@ -21,3 +23,17 @@ services:
 
   Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager: ~
   Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManagerInterface: '@Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager'
+
+  Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactory: ~
+  Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactoryInterface: '@Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactory'
+
+  Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\PersistOperation:
+    arguments:
+        - '@Doctrine\ORM\EntityManagerInterface'
+    tags: ['sauls.object_registry.batch_operation']
+
+  Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\RemoveOperation:
+    arguments:
+      - '@Doctrine\ORM\EntityManagerInterface'
+    tags: ['sauls.object_registry.batch_operation']
+
