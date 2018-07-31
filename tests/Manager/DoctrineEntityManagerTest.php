@@ -64,7 +64,6 @@ class DoctrineEntityManagerTest extends TestCase
             $this->eventDispatcher->reveal(),
             $this->entityManager->reveal(),
             $this->logger->reveal(),
-            $this->classMetaDataFactory->reveal(),
             $this->batchObjectsManager->reveal()
         );
         $manager->setObjectClass($class);
@@ -151,5 +150,6 @@ class DoctrineEntityManagerTest extends TestCase
         $this->classMetaDataFactory = $this->prophesize(ClassMetadataFactory::class);
         $this->classMetaDataFactory->isTransient(Argument::any())->willReturn(false);
         $this->batchObjectsManager = $this->prophesize(PersistentBatchObjectsManagerInterface::class);
+        $this->entityManager->getMetadataFactory()->willReturn($this->classMetaDataFactory);
     }
 }

@@ -43,7 +43,6 @@ class DoctrineEntityManager extends ObjectManager implements DoctrineEntityManag
         EventDispatcherInterface $eventDispatcher,
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
-        ClassMetadataFactory $classMetadataFactory,
         PersistentBatchObjectsManagerInterface $persistentBatchObjectsManager
     ) {
         parent::__construct($eventDispatcher);
@@ -51,7 +50,7 @@ class DoctrineEntityManager extends ObjectManager implements DoctrineEntityManag
         $this->eventDispatcher = $eventDispatcher;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
-        $this->classMetadataFactory = $classMetadataFactory;
+        $this->classMetadataFactory = $entityManager->getMetadataFactory();
         $this->persistentBatchObjectsManager = $persistentBatchObjectsManager;
     }
 
