@@ -22,14 +22,9 @@ class EventDispatcher implements EventDispatcherInterface
      * @var SymfonyEventDispatcherInterface
      */
     private $eventDispatcher;
-    /**
-     * @var EventNameFactoryInterface
-     */
-    private $eventNameFactory;
 
-    public function __construct(
-        SymfonyEventDispatcherInterface $eventDispatcher
-    ) {
+    public function __construct(SymfonyEventDispatcherInterface $eventDispatcher)
+    {
         $this->eventDispatcher = $eventDispatcher;
     }
 
