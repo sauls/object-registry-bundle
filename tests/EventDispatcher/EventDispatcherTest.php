@@ -23,36 +23,28 @@ class EventDispatcherTest extends TestCase
      * @var SymfonyEventDispatcherInterface
      */
     private $symfonyEventDispatcher;
-    /**
-     * @var EventNameFactoryInterface
-     */
-    private $eventNameFactory;
 
     public function testShouldDispatchEvent(): void
     {
         $eventDispatcher = $this->createEventDispatcher();
         $event = $this->prophesize(Event::class);
 
-
-        $this->eventNameFactory->create('test_event', $event)->willReturn('test_event.test');
         $this->symfonyEventDispatcher->hasListeners('test_event.test')->willReturn(true);
 
         $this->symfonyEventDispatcher->dispatch('test_event.test', $event)->shouldBeCalled();
 
-        $eventDispatcher->dispatch('test_event', $event->reveal());
+        $eventDispatcher->dispatch('test_event.test', $event->reveal());
     }
 
     public function createEventDispatcher(): EventDispatcherInterface
     {
         return new EventDispatcher(
-            $this->symfonyEventDispatcher->reveal(),
-            $this->eventNameFactory->reveal()
+            $this->symfonyEventDispatcher->reveal()
         );
     }
 
     protected function setUp()
     {
         $this->symfonyEventDispatcher = $this->prophesize(SymfonyEventDispatcherInterface::class);
-        $this->eventNameFactory = $this->prophesize(EventNameFactoryInterface::class);
     }
 }
