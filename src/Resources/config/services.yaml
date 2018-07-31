@@ -40,3 +40,16 @@ services:
       - '@Doctrine\ORM\EntityManagerInterface'
     tags: ['sauls.object_registry.batch_operation']
 
+  Sauls\Bundle\ObjectRegistryBundle\Manager\ObjectManager:
+    arguments:
+      - '@Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcher'
+
+  Sauls\Bundle\ObjectRegistryBundle\Manager\DoctrineEntityManager:
+    parent: '@Sauls\Bundle\ObjectRegistryBundle\Manager\ObjectManager'
+    arguments:
+      - '@Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcher'
+
+  Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcher:
+    arguments:
+      - '@Symfony\Component\EventDispatcher\EventDispatcherInterface'
+      - '@Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactory'
