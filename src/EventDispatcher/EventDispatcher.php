@@ -28,17 +28,13 @@ class EventDispatcher implements EventDispatcherInterface
     private $eventNameFactory;
 
     public function __construct(
-        SymfonyEventDispatcherInterface $eventDispatcher,
-        EventNameFactoryInterface $eventNameFactory
+        SymfonyEventDispatcherInterface $eventDispatcher
     ) {
         $this->eventDispatcher = $eventDispatcher;
-        $this->eventNameFactory = $eventNameFactory;
     }
 
     public function dispatch(string $eventName, Event $event): void
     {
-        $eventName = $this->eventNameFactory->create($eventName, $event);
-
         if ($this->eventDispatcher->hasListeners($eventName)) {
             $this->eventDispatcher->dispatch($eventName, $event);
         }
