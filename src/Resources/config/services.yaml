@@ -1,0 +1,10 @@
+services:
+
+  _instanceof:
+    Sauls\Bundle\ObjectRegistryBundle\Manager\ManagerInterface:
+      shared: false
+      tags: ['sauls.object_registry.manager']
+    Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\OperationInterface:
+      tags: ['sauls.object_registry.batch_operation']
+    Sauls\Bundle\ObjectRegistryBundle\Manager\PersistentBatchObjectsManager:
+      shared: false
