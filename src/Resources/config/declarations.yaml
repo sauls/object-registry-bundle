@@ -37,7 +37,6 @@ services:
   Sauls\Bundle\ObjectRegistryBundle\Manager\ManagerInterface: '@Sauls\Bundle\ObjectRegistryBundle\Manager\ObjectManager'
 
   Sauls\Bundle\ObjectRegistryBundle\Manager\DoctrineEntityManager:
-    parent: '@Sauls\Bundle\ObjectRegistryBundle\Manager\ObjectManager'
     arguments:
         - '@Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcher'
         - '@Doctrine\ORM\EntityManagerInterface'
