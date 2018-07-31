@@ -51,7 +51,7 @@ services:
       - '@Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcher'
       - '@Doctrine\ORM\EntityManagerInterface'
       - '@Psr\Log\LoggerInterface'
-      - '@Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager'
+      - '@Sauls\Bundle\ObjectRegistryBundle\Manager\PersistentBatchObjectsManager'
     tags: ['sauls.object_registry.manager']
 
   Sauls\Bundle\ObjectRegistryBundle\Manager\DoctrineEntityManagerInterface: '@Sauls\Bundle\ObjectRegistryBundle\Manager\DoctrineEntityManager'
