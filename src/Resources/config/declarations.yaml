@@ -13,8 +13,8 @@ services:
 
   Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry:
     arguments:
-    - '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection'
-    - '@Doctrine\ORM\EntityManagerInterface'
+      - '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection'
+      - '@Doctrine\ORM\EntityManagerInterface'
   Sauls\Bundle\ObjectRegistryBundle\Registry\RegistryInterface: '@Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry'
 
   Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager: ~
@@ -25,30 +25,33 @@ services:
 
   Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\PersistOperation:
     arguments:
-    - '@Doctrine\ORM\EntityManagerInterface'
+      - '@Doctrine\ORM\EntityManagerInterface'
     tags: ['sauls.object_registry.batch_operation']
 
   Sauls\Bundle\ObjectRegistryBundle\Batch\Operation\RemoveOperation:
     arguments:
-    - '@Doctrine\ORM\EntityManagerInterface'
+      - '@Doctrine\ORM\EntityManagerInterface'
     tags: ['sauls.object_registry.batch_operation']
 
   Sauls\Bundle\ObjectRegistryBundle\Manager\ObjectManager:
     arguments:
-    - '@Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcher'
+      - '@Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcher'
+    tags: ['sauls.object_registry.manager']
+
 
   Sauls\Bundle\ObjectRegistryBundle\Manager\ManagerInterface: '@Sauls\Bundle\ObjectRegistryBundle\Manager\ObjectManager'
 
   Sauls\Bundle\ObjectRegistryBundle\Manager\DoctrineEntityManager:
     arguments:
-        - '@Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcher'
-        - '@Doctrine\ORM\EntityManagerInterface'
-        - '@Psr\Log\LoggerInterface'
-        - '@Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager'
+      - '@Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcher'
+      - '@Doctrine\ORM\EntityManagerInterface'
+      - '@Psr\Log\LoggerInterface'
+      - '@Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager'
+    tags: ['sauls.object_registry.manager']
 
   Sauls\Bundle\ObjectRegistryBundle\Manager\DoctrineEntityManagerInterface: '@Sauls\Bundle\ObjectRegistryBundle\Manager\DoctrineEntityManager'
 
   Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcher:
     arguments:
-    - '@Symfony\Component\EventDispatcher\EventDispatcherInterface'
-    - '@Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactory'
+      - '@Symfony\Component\EventDispatcher\EventDispatcherInterface'
+      - '@Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactory'
