@@ -13,6 +13,7 @@
 namespace Sauls\Bundle\ObjectRegistryBundle\Registry;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
+use Doctrine\ORM\EntityManagerInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollectionInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Manager\DoctrineEntityManager;
 use Sauls\Bundle\ObjectRegistryBundle\Manager\ManagerInterface;
@@ -32,10 +33,10 @@ class ObjectRegistry implements RegistryInterface
 
     public function __construct(
         ObjectManagerCollectionInterface $objectManagerCollection,
-        ClassMetadataFactory $classMetadataFactory
+        EntityManagerInterface $entityManager
     ) {
         $this->objectManagerCollection = $objectManagerCollection;
-        $this->classMetadataFactory = $classMetadataFactory;
+        $this->classMetadataFactory = $entityManager->getMetadataFactory();
     }
 
     public function getManager(string $class): ManagerInterface

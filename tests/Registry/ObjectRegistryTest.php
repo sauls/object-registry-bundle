@@ -13,6 +13,7 @@
 namespace Sauls\Bundle\ObjectRegistryBundle\Registry;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollectionInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Manager\DoctrineEntityManagerInterface;
@@ -21,13 +22,14 @@ use Sauls\Bundle\ObjectRegistryBundle\Manager\ManagerInterface;
 class ObjectRegistryTest extends TestCase
 {
     private $objectManagerCollection;
+    private $entityManager;
     private $classMetadataFactory;
 
     public function createObjectRegistry(): RegistryInterface
     {
         return new ObjectRegistry(
             $this->objectManagerCollection->reveal(),
-            $this->classMetadataFactory->reveal()
+            $this->entityManager->reveal()
         );
     }
 
@@ -67,5 +69,7 @@ class ObjectRegistryTest extends TestCase
     {
         $this->objectManagerCollection = $this->prophesize(ObjectManagerCollectionInterface::class);
         $this->classMetadataFactory = $this->prophesize(ClassMetadataFactory::class);
+        $this->entityManager = $this->prophesize(EntityManagerInterface::class);
+        $this->entityManager->getMetadataFactory()->willReturn($this->classMetadataFactory);
     }
 }

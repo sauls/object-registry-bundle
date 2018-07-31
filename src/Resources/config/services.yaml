@@ -21,7 +21,7 @@ services:
   Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry:
     arguments:
       - '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection'
-      - '@Doctrine\ORM\Mapping\ClassMetadataFactory'
+      - '@Doctrine\ORM\EntityManagerInterface'
   Sauls\Bundle\ObjectRegistryBundle\Registry\RegistryInterface: '@Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry'
 
   Sauls\Bundle\ObjectRegistryBundle\Manager\Batch\PersistentBatchObjectsManager: ~
