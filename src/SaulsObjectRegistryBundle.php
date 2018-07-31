@@ -12,9 +12,17 @@
 
 namespace Sauls\Bundle\ObjectRegistryBundle;
 
+use Sauls\Bundle\ObjectRegistryBundle\DependencyInjection\Compiler\RegisterTaggedServicesPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class SaulsObjectRegistryBundle extends Bundle
 {
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new RegisterTaggedServicesPass);
+    }
 
 }

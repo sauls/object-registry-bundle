@@ -1,16 +1,8 @@
 services:
-  Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection:
-    public: true
-    arguments:
-      - [!tagged sauls.object_registry.manager]
-
+  Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection: ~
   Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollectionInterface: '@Sauls\Bundle\ObjectRegistryBundle\Collection\ObjectManagerCollection'
 
-  Sauls\Bundle\ObjectRegistryBundle\Collection\BatchOperationCollection:
-    public: true
-    arguments:
-      - [!tagged sauls.object_registry.batch_operation]
-
+  Sauls\Bundle\ObjectRegistryBundle\Collection\BatchOperationCollection: ~
   Sauls\Bundle\ObjectRegistryBundle\Collection\BatchOperationCollectionInterface: '@Sauls\Bundle\ObjectRegistryBundle\Collection\BatchOperationCollection'
 
   Sauls\Bundle\ObjectRegistryBundle\Registry\ObjectRegistry:
