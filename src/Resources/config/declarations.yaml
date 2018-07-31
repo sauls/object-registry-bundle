@@ -54,3 +54,9 @@ services:
     arguments:
       - '@Symfony\Component\EventDispatcher\EventDispatcherInterface'
       - '@Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactory'
+
+  Sauls\Bundle\ObjectRegistryBundle\EvenListener\DoctrineEventsSubscriber:
+    arguments:
+      - '@Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcher'
+      - '@Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactory'
+    tags: ['doctrine.event_subscriber']
