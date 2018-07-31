@@ -12,7 +12,6 @@
 
 namespace Sauls\Bundle\ObjectRegistryBundle\EventDispatcher;
 
-use Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactoryInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as SymfonyEventDispatcherInterface;
 
