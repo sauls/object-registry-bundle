@@ -37,10 +37,11 @@ class ObjectManagerCollection extends ArrayCollection implements ObjectManagerCo
      */
     private function setConcreteManager(object $value): void
     {
-        if ($value instanceof ConcreteManagerInterface) {
+        if (\is_subclass_of($value, ConcreteManagerInterface::class)) {
             parent::set(
                 $this->glueKeyNameWithValue(self::CONCRETE_MANAGERS_KEY, $value->getObjectClass()), $value
             );
+            return;
         }
     }
 
@@ -54,10 +55,11 @@ class ObjectManagerCollection extends ArrayCollection implements ObjectManagerCo
      */
     private function setNamedManager(object $value): void
     {
-        if ($value instanceof NamedManagerInterface) {
+        if (\is_subclass_of($value, NamedManagerInterface::class)) {
             parent::set(
                 $this->glueKeyNameWithValue(self::NAMED_MANAGERS_KEY, $value->getName()), $value
             );
+            return;
         }
     }
 
@@ -67,10 +69,11 @@ class ObjectManagerCollection extends ArrayCollection implements ObjectManagerCo
      */
     private function setLooseManager($key, object $value): void
     {
-        if ($value instanceof ManagerInterface) {
+        if (\is_subclass_of($value, ManagerInterface::class)) {
             parent::set(
                 $this->glueKeyNameWithValue(self::LOOSE_MANAGERS_KEY, $key), $value
             );
+            return;
         }
     }
 

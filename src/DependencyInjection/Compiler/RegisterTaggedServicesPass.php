@@ -45,7 +45,7 @@ class RegisterTaggedServicesPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds($tag);
 
         foreach ($taggedServices as $id => $tags) {
-            $definition->addMethodCall('set', [null, new Reference($id)]);
+            $definition->addMethodCall('set', ['', new Reference($id)]);
         }
     }
 
