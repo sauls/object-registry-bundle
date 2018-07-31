@@ -33,14 +33,15 @@ class DoctrineEventsSubscriberTest extends TestCase
 
     public function testShouldReturnSubscribedEventsArray(): void
     {
+        $eventSubscriber = $this->createDoctrineEventSubscriber();
         $this->assertEquals([
-            'prePersist' => ['onPrePersist'],
-            'postPersist' => ['onPostPersist'],
-            'preUpdate' => ['onPreUpdate'],
-            'postUpdate' => ['onPostUpdate'],
-            'preRemove' => ['onPreRemove'],
-            'postRemove' => ['onPostRemove'],
-        ], DoctrineEventsSubscriber::getSubscribedEvents());
+            'prePersist' => 'prePersist',
+            'postPersist' => 'postPersist',
+            'preUpdate' => 'preUpdate',
+            'postUpdate' => 'postUpdate',
+            'preRemove' => 'preRemove',
+            'postRemove' => 'postRemove',
+        ], $eventSubscriber->getSubscribedEvents());
     }
 
     public function testShouldDispatchPrePersistEvent(): void
@@ -59,7 +60,7 @@ class DoctrineEventsSubscriberTest extends TestCase
             Argument::type(GenericDoctrineObjectEvent::class)
         )->shouldBeCalled();
 
-        $eventSubscriber->onPrePersist($event->reveal());
+        $eventSubscriber->prePersist($event->reveal());
     }
 
     public function createDoctrineEventSubscriber(): DoctrineEventsSubscriber
@@ -86,7 +87,7 @@ class DoctrineEventsSubscriberTest extends TestCase
             Argument::type(GenericDoctrineObjectEvent::class)
         )->shouldBeCalled();
 
-        $eventSubscriber->onPostPersist($event->reveal());
+        $eventSubscriber->postPersist($event->reveal());
     }
 
     public function testShouldDispatchPreUpdateEvent(): void
@@ -105,7 +106,7 @@ class DoctrineEventsSubscriberTest extends TestCase
             Argument::type(GenericDoctrineObjectEvent::class)
         )->shouldBeCalled();
 
-        $eventSubscriber->onPreUpdate($event->reveal());
+        $eventSubscriber->preUpdate($event->reveal());
     }
 
     public function testShouldDispatchPostUpdateEvent(): void
@@ -124,7 +125,7 @@ class DoctrineEventsSubscriberTest extends TestCase
             Argument::type(GenericDoctrineObjectEvent::class)
         )->shouldBeCalled();
 
-        $eventSubscriber->onPostUpdate($event->reveal());
+        $eventSubscriber->postUpdate($event->reveal());
     }
 
     public function testShouldDispatchPreRemoveEvent(): void
@@ -143,7 +144,7 @@ class DoctrineEventsSubscriberTest extends TestCase
             Argument::type(GenericDoctrineObjectEvent::class)
         )->shouldBeCalled();
 
-        $eventSubscriber->onPreRemove($event->reveal());
+        $eventSubscriber->preRemove($event->reveal());
     }
 
     public function testShouldDispatchPostRemoveEvent(): void
@@ -162,7 +163,7 @@ class DoctrineEventsSubscriberTest extends TestCase
             Argument::type(GenericDoctrineObjectEvent::class)
         )->shouldBeCalled();
 
-        $eventSubscriber->onPostRemove($event->reveal());
+        $eventSubscriber->postRemove($event->reveal());
     }
 
     protected function setUp()
