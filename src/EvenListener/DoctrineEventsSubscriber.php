@@ -12,6 +12,7 @@
 
 namespace Sauls\Bundle\ObjectRegistryBundle\EvenListener;
 
+use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
@@ -19,9 +20,8 @@ use Sauls\Bundle\ObjectRegistryBundle\Event\DoctrineObjectEvents;
 use Sauls\Bundle\ObjectRegistryBundle\Event\GenericDoctrineObjectEvent;
 use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactoryInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class DoctrineEventsSubscriber implements EventSubscriberInterface
+class DoctrineEventsSubscriber implements EventSubscriber
 {
     /**
      * @var EventDispatcherInterface
@@ -41,25 +41,25 @@ class DoctrineEventsSubscriber implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents(): array
+    public function getSubscribedEvents(): array
     {
         return [
-            Events::prePersist => ['onPrePersist'],
-            Events::postPersist => ['onPostPersist'],
-            Events::preUpdate => ['onPreUpdate'],
-            Events::postUpdate => ['onPostUpdate'],
-            Events::preRemove => ['onPreRemove'],
-            Events::postRemove => ['onPostRemove'],
+            Events::prePersist => 'prePersist',
+            Events::postPersist => 'postPersist',
+            Events::preUpdate => 'preUpdate',
+            Events::postUpdate => 'postUpdate',
+            Events::preRemove => 'preRemove',
+            Events::postRemove => 'postRemove',
         ];
     }
 
-    public function onPrePersist(LifecycleEventArgs $event): void
+    public function prePersist(LifecycleEventArgs $event): void
     {
         $this->process(DoctrineObjectEvents::PRE_PERSIST, $event);
     }
 
     /**
-     * @param string $eventName
+     * @param string                                $eventName
      * @param LifecycleEventArgs|PreUpdateEventArgs $event
      */
     private function process(string $eventName, LifecycleEventArgs $event): void
@@ -71,27 +71,27 @@ class DoctrineEventsSubscriber implements EventSubscriberInterface
         $this->eventDispatcher->dispatch($eventName, $newEvent);
     }
 
-    public function onPostPersist(LifecycleEventArgs $event): void
+    public function postPersist(LifecycleEventArgs $event): void
     {
         $this->process(DoctrineObjectEvents::POST_PERSIST, $event);
     }
 
-    public function onPreUpdate(PreUpdateEventArgs $event): void
+    public function preUpdate(PreUpdateEventArgs $event): void
     {
         $this->process(DoctrineObjectEvents::PRE_UPDATE, $event);
     }
 
-    public function onPostUpdate(LifecycleEventArgs $event): void
+    public function postUpdate(LifecycleEventArgs $event): void
     {
         $this->process(DoctrineObjectEvents::POST_UPDATE, $event);
     }
 
-    public function onPreRemove(LifecycleEventArgs $event): void
+    public function preRemove(LifecycleEventArgs $event): void
     {
         $this->process(DoctrineObjectEvents::PRE_REMOVE, $event);
     }
 
-    public function onPostRemove(LifecycleEventArgs $event): void
+    public function postRemove(LifecycleEventArgs $event): void
     {
         $this->process(DoctrineObjectEvents::POST_REMOVE, $event);
     }
