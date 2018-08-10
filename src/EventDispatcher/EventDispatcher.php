@@ -12,7 +12,6 @@
 
 namespace Sauls\Bundle\ObjectRegistryBundle\EventDispatcher;
 
-use Sauls\Bundle\ObjectRegistryBundle\Factory\EventNameFactoryInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as SymfonyEventDispatcherInterface;
 
@@ -22,14 +21,9 @@ class EventDispatcher implements EventDispatcherInterface
      * @var SymfonyEventDispatcherInterface
      */
     private $eventDispatcher;
-    /**
-     * @var EventNameFactoryInterface
-     */
-    private $eventNameFactory;
 
-    public function __construct(
-        SymfonyEventDispatcherInterface $eventDispatcher
-    ) {
+    public function __construct(SymfonyEventDispatcherInterface $eventDispatcher)
+    {
         $this->eventDispatcher = $eventDispatcher;
     }
 
