@@ -68,8 +68,9 @@ class ObjectRegistry implements RegistryInterface
 
     private function configureManager(string $class, ManagerInterface $manager): ManagerInterface
     {
-        $manager->setObjectClass($class);
-        return $manager;
+        $objectManager = clone $manager;
+        $objectManager->setObjectClass($class);
+        return $objectManager;
     }
 
     public function isDoctrineObject(string $class): bool
