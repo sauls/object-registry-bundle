@@ -16,4 +16,5 @@ interface PersistentObjectManagerInterface
 {
     public function save(object $object): bool;
     public function remove(object $object): bool;
+    public function clear(): void;
 }

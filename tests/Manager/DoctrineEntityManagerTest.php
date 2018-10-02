@@ -114,6 +114,15 @@ class DoctrineEntityManagerTest extends TestCase
         $this->assertTrue($manager->remove($object));
     }
 
+    public function testShouldClearEntitiesOfManagedClass(): void
+    {
+        $manager = $this->createDoctrineEntityManager(SampleObject::class);
+
+        $this->entityManager->clear(SampleObject::class)->shouldBeCalled();
+
+        $manager->clear();
+    }
+
     public function testShouldNotRemoveGivenObject(): void
     {
         $manager = $this->createDoctrineEntityManager(SampleObject::class);
