@@ -114,7 +114,7 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
             $this->processChunk($operation, $chunk);
             $this->entityManager->flush();
             $this->eventDispatcher->dispatch($operation->getPostEventName(), $event);
-            $this->entityManager->clear();
+            $this->manager->clear();
         }
     }
 

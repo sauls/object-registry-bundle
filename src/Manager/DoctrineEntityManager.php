@@ -114,4 +114,9 @@ class DoctrineEntityManager extends ObjectManager implements DoctrineEntityManag
         $this->persistentBatchObjectsManager->setManager($this);
         return $this->persistentBatchObjectsManager;
     }
+
+    public function clear(): void
+    {
+        $this->entityManager->clear($this->objectClass);
+    }
 }

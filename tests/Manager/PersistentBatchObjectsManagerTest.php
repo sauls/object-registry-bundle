@@ -108,7 +108,7 @@ class PersistentBatchObjectsManagerTest extends TestCase
             return \call_user_func($args[0]);
         });
 
-        $manager->save();
+        $this->assertTrue($manager->save());
     }
 
     private function configureOperation(string $name, string $preEventName, string $postEventName)
@@ -128,7 +128,6 @@ class PersistentBatchObjectsManagerTest extends TestCase
         $this->entityManager->flush()->shouldBeCalled();
         $this->eventDispatcher->dispatch($postEventName,
             Argument::type(GenericDoctrineCollectionEvent::class))->shouldBeCalled();
-        $this->entityManager->clear()->shouldBeCalled();
     }
 
     public function testShouldRemove(): void
@@ -144,7 +143,7 @@ class PersistentBatchObjectsManagerTest extends TestCase
             return \call_user_func($args[0]);
         });
 
-        $manager->remove();
+        $this->assertTrue($manager->remove());
     }
 
     public function testShouldThrowExceptionWhenOperationDoesNotExists(): void
