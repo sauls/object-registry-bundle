@@ -128,6 +128,7 @@ class PersistentBatchObjectsManagerTest extends TestCase
         $this->entityManager->flush()->shouldBeCalled();
         $this->eventDispatcher->dispatch($postEventName,
             Argument::type(GenericDoctrineCollectionEvent::class))->shouldBeCalled();
+        $this->entityManager->clear()->shouldBeCalled();
     }
 
     public function testShouldRemove(): void
