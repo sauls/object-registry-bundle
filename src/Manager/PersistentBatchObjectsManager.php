@@ -140,7 +140,6 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
     {
         foreach ($chunk as $object) {
             $this->manager->checkObjectIntegrity($object);
-            $this->refresh($object);
             $operation->execute($object);
         }
     }
@@ -168,29 +167,5 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
     public function setRefresh(array $properties): void
     {
         $this->refreshProperties = $properties;
-    }
-
-    /**
-     * @param $object
-     * @throws \Sauls\Component\Helper\Exception\PropertyNotAccessibleException
-     * @throws \Sauls\Component\Helper\Exception\ClassPropertyNotSetException
-     */
-    private function refresh(object $object): void
-    {
-        if (empty($this->refreshProperties)) {
-            return;
-        }
-
-        foreach ($this->refreshProperties as $property) {
-            $value = get_object_property_value($object, $property);
-            if (false === \is_object($value)) {
-                continue;
-            }
-
-            $metadata = $this->entityManager->getClassMetadata(\get_class($value));
-            $freshValue = $this->entityManager->find($metadata->getName(), $metadata->getIdentifierValues($value));
-
-            set_object_property_value($object, $property, $freshValue);
-        }
     }
 }

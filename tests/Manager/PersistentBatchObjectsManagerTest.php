@@ -167,37 +167,6 @@ class PersistentBatchObjectsManagerTest extends TestCase
         $manager->save();
     }
 
-    public function testShouldRefresh(): void
-    {
-        $object2 = new SampleObject;
-
-        $object1 = new SampleObject;
-        $object1->setProperty1($object2);
-
-        $manager = $this->configureManager([$object2, $object1], 5);
-        $operation = $this->configureOperation('persist', 'test_pre_persist', 'test_post_persist');
-        $operation->execute(Argument::any())->shouldBeCalled();
-        $this->batchOperationCollection->get('persist')->willReturn($operation->reveal());
-
-        $this->configureProcessMethodsShouldBeCalled('test_pre_persist', 'test_post_persist');
-
-        $this->entityManager->transactional(Argument::any())->will(function ($args) {
-            return \call_user_func($args[0]);
-        });
-
-        $medatataMock = $this->prophesize(ClassMetadata::class);
-        $medatataMock->getName()->willReturn('id');
-        $medatataMock->getIdentifierValues(Argument::any())->willReturn(1);
-        $this->entityManager->getClassMetadata(SampleObject::class)->willReturn($medatataMock->reveal());
-        $this->entityManager->find('id', 1)->willReturn($object2);
-
-        $manager->setRefresh([
-            'property1'
-        ]);
-
-        $this->assertTrue($manager->save());
-    }
-
     protected function setUp()
     {
         $this->eventDispatcher = $this->prophesize(EventDispatcherInterface::class);
