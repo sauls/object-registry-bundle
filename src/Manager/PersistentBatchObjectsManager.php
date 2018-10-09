@@ -23,6 +23,8 @@ use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Exception\EmptyDataException;
 use Sauls\Bundle\ObjectRegistryBundle\Exception\ManagerNotFoundException;
 use Sauls\Bundle\ObjectRegistryBundle\Exception\OperationNotFoundException;
+use function Sauls\Component\Helper\get_object_property_value;
+use function Sauls\Component\Helper\set_object_property_value;
 
 class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInterface
 {
@@ -51,6 +53,11 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
      * @var BatchOperationCollectionInterface
      */
     private $batchOperations;
+
+    /**
+     * @var array
+     */
+    private $refreshProperties;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -133,6 +140,7 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
     {
         foreach ($chunk as $object) {
             $this->manager->checkObjectIntegrity($object);
+            $this->refresh($object);
             $operation->execute($object);
         }
     }
@@ -155,5 +163,34 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
     public function setManager(DoctrineEntityManagerInterface $manager): void
     {
         $this->manager = $manager;
+    }
+
+    public function setRefresh(array $properties): void
+    {
+        $this->refreshProperties = $properties;
+    }
+
+    /**
+     * @param $object
+     * @throws \Sauls\Component\Helper\Exception\PropertyNotAccessibleException
+     * @throws \Sauls\Component\Helper\Exception\ClassPropertyNotSetException
+     */
+    private function refresh(object $object): void
+    {
+        if (empty($this->refreshProperties)) {
+            return;
+        }
+
+        foreach ($this->refreshProperties as $property) {
+            $value = get_object_property_value($object, $property);
+            if (false === \is_object($value)) {
+                continue;
+            }
+
+            $metadata = $this->entityManager->getClassMetadata(\get_class($value));
+            $freshValue = $this->entityManager->find($metadata->getName(), $metadata->getIdentifierValues($value));
+
+            set_object_property_value($object, $property, $freshValue);
+        }
     }
 }
