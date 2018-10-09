@@ -195,7 +195,6 @@ class PersistentBatchObjectsManagerTest extends TestCase
             'property1'
         ]);
 
-        $manager->save();
         $this->assertTrue($manager->save());
     }
 
