@@ -23,8 +23,6 @@ use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Exception\EmptyDataException;
 use Sauls\Bundle\ObjectRegistryBundle\Exception\ManagerNotFoundException;
 use Sauls\Bundle\ObjectRegistryBundle\Exception\OperationNotFoundException;
-use function Sauls\Component\Helper\get_object_property_value;
-use function Sauls\Component\Helper\set_object_property_value;
 
 class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInterface
 {
@@ -162,10 +160,5 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
     public function setManager(DoctrineEntityManagerInterface $manager): void
     {
         $this->manager = $manager;
-    }
-
-    public function setRefresh(array $properties): void
-    {
-        $this->refreshProperties = $properties;
     }
 }
