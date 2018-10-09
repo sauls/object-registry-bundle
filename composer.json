@@ -34,7 +34,6 @@
             "Sauls\\Bundle\\ObjectRegistryBundle\\": "tests/"
         }
     },
-    "minimum-stability": "stable",
     "extra": {
         "branch-alias": {
             "dev-master": "v1.x-dev"

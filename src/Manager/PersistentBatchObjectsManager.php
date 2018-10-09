@@ -175,7 +175,7 @@ class PersistentBatchObjectsManager implements PersistentBatchObjectsManagerInte
      * @throws \Sauls\Component\Helper\Exception\PropertyNotAccessibleException
      * @throws \Sauls\Component\Helper\Exception\ClassPropertyNotSetException
      */
-    private function refresh($object): void
+    private function refresh(object $object): void
     {
         if (empty($this->refreshProperties)) {
             return;
