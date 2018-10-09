@@ -18,5 +18,4 @@ interface PersistentBatchObjectsManagerInterface
     public function remove(): bool;
     public function fill(array $objects, int $batchSize): void;
     public function setManager(DoctrineEntityManagerInterface $manager): void;
-    public function setRefresh(array $properties): void;
 }
