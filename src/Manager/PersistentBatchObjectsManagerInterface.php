@@ -12,7 +12,7 @@
 
 namespace Sauls\Bundle\ObjectRegistryBundle\Manager;
 
-interface PersistentBatchObjectsManagerInterface
+interface PersistentBatchObjectsManagerInterface extends PersistentBatchObjectClearFlagsInterface
 {
     public function save(): bool;
     public function remove(): bool;
