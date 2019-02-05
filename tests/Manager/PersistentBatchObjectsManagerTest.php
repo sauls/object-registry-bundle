@@ -13,7 +13,6 @@
 namespace Sauls\Bundle\ObjectRegistryBundle\Manager;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
@@ -24,7 +23,6 @@ use Sauls\Bundle\ObjectRegistryBundle\EventDispatcher\EventDispatcherInterface;
 use Sauls\Bundle\ObjectRegistryBundle\Exception\EmptyDataException;
 use Sauls\Bundle\ObjectRegistryBundle\Exception\ManagerNotFoundException;
 use Sauls\Bundle\ObjectRegistryBundle\Exception\OperationNotFoundException;
-use Sauls\Bundle\ObjectRegistryBundle\Stubs\SampleObject;
 
 class PersistentBatchObjectsManagerTest extends TestCase
 {
@@ -105,6 +103,7 @@ class PersistentBatchObjectsManagerTest extends TestCase
         $this->batchOperationCollection->get('persist')->willReturn($operation->reveal());
 
         $this->configureProcessMethodsShouldBeCalled('test_pre_persist', 'test_post_persist');
+        $this->entityManager->clear()->shouldBeCalled();
 
         $this->entityManager->transactional(Argument::any())->will(function ($args) {
             return \call_user_func($args[0]);
@@ -130,7 +129,6 @@ class PersistentBatchObjectsManagerTest extends TestCase
         $this->entityManager->flush()->shouldBeCalled();
         $this->eventDispatcher->dispatch($postEventName,
             Argument::type(GenericDoctrineCollectionEvent::class))->shouldBeCalled();
-        $this->entityManager->clear()->shouldBeCalled();
     }
 
     public function testShouldRemove(): void
@@ -141,6 +139,7 @@ class PersistentBatchObjectsManagerTest extends TestCase
         $this->batchOperationCollection->get('remove')->willReturn($operation->reveal());
 
         $this->configureProcessMethodsShouldBeCalled('test_pre_remove', 'test_post_remove');
+        $this->entityManager->clear()->shouldBeCalled();
 
         $this->entityManager->transactional(Argument::any())->will(function ($args) {
             return \call_user_func($args[0]);
@@ -165,6 +164,80 @@ class PersistentBatchObjectsManagerTest extends TestCase
         )->shouldBeCalled();
 
         $manager->save();
+    }
+
+    public function testShouldClearAll(): void
+    {
+        $manager = $this->configureManager([new \stdClass], 2);
+        $manager->setClearAll();
+        $operation = $this->configureOperation('persist', 'test_pre_persist', 'test_post_persist');
+        $operation->execute(Argument::any())->shouldBeCalled();
+        $this->batchOperationCollection->get('persist')->willReturn($operation->reveal());
+
+        $this->configureProcessMethodsShouldBeCalled('test_pre_persist', 'test_post_persist');
+
+        $this->entityManager->transactional(Argument::any())->will(function ($args) {
+            return \call_user_func($args[0]);
+        });
+
+        $this->entityManager->clear(Argument::any())->shouldBeCalled();
+
+        $this->assertTrue($manager->save());
+    }
+
+    public function testShouldClearNone(): void
+    {
+        $manager = $this->configureManager([new \stdClass], 2);
+        $manager->setClearNone();
+        $operation = $this->configureOperation('persist', 'test_pre_persist', 'test_post_persist');
+        $operation->execute(Argument::any())->shouldBeCalled();
+        $this->batchOperationCollection->get('persist')->willReturn($operation->reveal());
+
+        $this->configureProcessMethodsShouldBeCalled('test_pre_persist', 'test_post_persist');/**/
+        $this->entityManager->clear()->shouldNotBeCalled();
+
+        $this->entityManager->transactional(Argument::any())->will(function ($args) {
+            return \call_user_func($args[0]);
+        });
+
+        $this->assertTrue($manager->save());
+    }
+
+    public function testShouldClearObject(): void
+    {
+        $manager = $this->configureManager([new \stdClass], 2);
+        $manager->setClearObject();
+        $operation = $this->configureOperation('persist', 'test_pre_persist', 'test_post_persist');
+        $operation->execute(Argument::any())->shouldBeCalled();
+        $this->batchOperationCollection->get('persist')->willReturn($operation->reveal());
+
+        $this->configureProcessMethodsShouldBeCalled('test_pre_persist', 'test_post_persist');
+        $this->entityManager->clear(Argument::is('stdClass'))->shouldBeCalled();
+
+        $this->entityManager->transactional(Argument::any())->will(function ($args) {
+            return \call_user_func($args[0]);
+        });
+
+        $this->assertTrue($manager->save());
+    }
+
+    public function testShouldClearSpecific(): void
+    {
+        $manager = $this->configureManager([new \stdClass], 2);
+        $manager->setClearSpecific([\stdClass::class, 'Some\\Other\\Class']);
+        $operation = $this->configureOperation('persist', 'test_pre_persist', 'test_post_persist');
+        $operation->execute(Argument::any())->shouldBeCalled();
+        $this->batchOperationCollection->get('persist')->willReturn($operation->reveal());
+
+        $this->configureProcessMethodsShouldBeCalled('test_pre_persist', 'test_post_persist');
+        $this->entityManager->clear(Argument::is('stdClass'))->shouldBeCalled();
+        $this->entityManager->clear(Argument::is('Some\\Other\\Class'))->shouldBeCalled();
+
+        $this->entityManager->transactional(Argument::any())->will(function ($args) {
+            return \call_user_func($args[0]);
+        });
+
+        $this->assertTrue($manager->save());
     }
 
     protected function setUp()
